@@ -7,6 +7,13 @@ metadata:
   name: cedar-webhook
   namespace: kube-system
 spec:
+  initContainers:
+    - name: fix-cert-permissions
+      image: busybox
+      command: ["sh", "-c", "chown -R 65532:65532 /cedar-authorizer/certs && chmod -R g+rwX /cedar-authorizer/certs"]
+      volumeMounts:
+        - mountPath: /cedar-authorizer/certs
+          name: var-run-cedar-authorizer-certs
   containers:
     - name: cedar-webhook
       command:
